@@ -16,7 +16,7 @@ pip install -r requirements.txt
 python crawler.py
 ```
 **Now the two csv data set will be saved in data folder.\
-现在两个csv格式的数据集将为存放在data文件夹中。**
+现在两个csv格式的数据集将会存放在data文件夹中。**
 
 
 ### Modules 模块
