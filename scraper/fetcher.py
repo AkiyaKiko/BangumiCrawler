@@ -43,11 +43,11 @@ async def get_anime_details(session, sub_url):
 
     # 获取评分
     score_tag = soup.find('span', class_='number', property='v:average')
-    score = score_tag.text.strip() if score_tag else 'N/A'
+    score = score_tag.text.strip() if score_tag else None
     
     # 获取评分人数
     votes_tag = soup.find('span', property='v:votes')
-    votes = votes_tag.text.strip() if votes_tag else '0'
+    votes = votes_tag.text.strip() if votes_tag else None
     
     # 获取所有标签
     tags = []
