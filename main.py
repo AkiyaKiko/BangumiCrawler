@@ -11,7 +11,7 @@ from config import USE_PROXY, START_YEAR, END_YEAR
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-async def fetch_anime_details_and_insert(session, anime_name, sub_url, release_date):
+async def fetch_anime_details_and_insert(session, anime_name, sub_url, release_date, score):
     """异步获取番剧详细信息并插入数据库"""
     logger.info(f"Fetching details for {anime_name}")
     
@@ -21,9 +21,9 @@ async def fetch_anime_details_and_insert(session, anime_name, sub_url, release_d
 
         # 从详细信息中提取数据
         anime_id = sub_url.split('/')[-1]  # 假设ID是URL的最后一部分
-        score = anime_details.get('score', 0.0)  # 获取评分
+        score = score or None  # 获取评分
         score_count = anime_details.get('votes', 0)  # 获取评分人数
-        release_date = release_date or anime_details.get('release_date', "Unknown")  # 获取放送日期，优先使用抓取到的日期
+        release_date = release_date or anime_details.get('release_date', None)  # 获取放送日期，优先使用抓取到的日期
         tags = anime_details.get('tags', [])  # 获取分类标签
         production_companies = anime_details.get('production_companies', [])  # 获取制作公司
         # 将动漫基本信息插入到数据库
@@ -59,9 +59,9 @@ async def fetch_all_data():
 
             tasks = []  # 用于存储所有异步任务
 
-            for anime_name, sub_url, release_date in anime_list:  # 获取的列表包含 release_date
+            for anime_name, sub_url, release_date, score in anime_list:  # 获取的列表包含 release_date
                 # 创建并添加任务到任务列表
-                tasks.append(fetch_anime_details_and_insert(session, anime_name, sub_url, release_date))
+                tasks.append(fetch_anime_details_and_insert(session, anime_name, sub_url, release_date, score))
 
             # 等待所有任务并发执行
             await asyncio.gather(*tasks)

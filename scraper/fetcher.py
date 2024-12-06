@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 async def fetch(session, url):
     """异步获取网页内容，带超时设置和重试机制"""
-    timeout = ClientTimeout(total=60)  # 设置60秒超时时间
-    retries = 3  # 最大重试次数
+    timeout = ClientTimeout(total=600)  # 设置60秒超时时间
+    retries = 20  # 最大重试次数
     attempt = 0
     proxy = get_random_proxy()  # 使用代理池中的代理
 
@@ -41,9 +41,10 @@ async def get_anime_details(session, sub_url):
     html = await fetch(session, url)
     soup = BeautifulSoup(html, 'lxml')
 
+    '''decrypted because of the website's login requirement'''
     # 获取评分
-    score_tag = soup.find('span', class_='number', property='v:average')
-    score = score_tag.text.strip() if score_tag else None
+    # score_tag = soup.find('span', class_='number', property='v:average')
+    # score = score_tag.text.strip() if score_tag else None
     
     # 获取评分人数
     votes_tag = soup.find('span', property='v:votes')
@@ -55,8 +56,11 @@ async def get_anime_details(session, sub_url):
     if tag_div:
         tag_links = tag_div.find_all('a', class_='l')  # 查找所有带有class='l'的a标签
         for tag in tag_links:
-            tag_name = tag.find('span').text.strip() if tag.find('span') else 'Unknown'
-            tags.append(tag_name)
+            # 查找span标签，如果没有找到，则直接使用标签中的文本内容
+            tag_name = tag.find('span').text.strip() if tag.find('span') else tag.text.strip()
+            # 跳过未知标签或无效标签（比如空字符串）
+            if tag_name and tag_name != '更多 +':
+                tags.append(tag_name)
     
     # 获取制作公司
     production_companies = []
@@ -70,7 +74,7 @@ async def get_anime_details(session, sub_url):
                     production_companies.append(production_name)
 
     return {
-        'score': score,
+        #'score': score,
         'votes': votes,
         'tags': tags,  # 返回标签列表
         'production_companies': production_companies  # 返回制作公司列表

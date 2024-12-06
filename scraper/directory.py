@@ -56,7 +56,7 @@ async def get_anime_list(session, year, total_pages):
         
         for item in browser_item_list.find_all('li', class_='item'):
             title_tag = item.find('h3').find('a') if item.find('h3') else None
-            anime_name = title_tag.text.strip() if title_tag else "Unknown"
+            anime_name = title_tag.text.strip() if title_tag else None
             sub_url = title_tag['href'] if title_tag else "#"
             
             # 获取上映时间
@@ -66,6 +66,14 @@ async def get_anime_list(session, year, total_pages):
                 release_text = info_tag.text.strip()
                 release_date = extract_release_date(release_text)
                 
-            anime_list.append((anime_name, sub_url, release_date))
+            # 提取评分
+            rate_info = item.find('p', class_='rateInfo')
+            score = None
+            if rate_info:
+                score_tag = rate_info.find('small', class_='fade')
+                if score_tag and score_tag.text.strip():
+                    score = score_tag.text.strip()
+                    
+            anime_list.append((anime_name, sub_url, release_date, score))
     
     return anime_list
