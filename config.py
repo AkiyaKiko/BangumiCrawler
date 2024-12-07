@@ -9,7 +9,7 @@ PROXIES = [
 
 # 爬虫基本配置
 MAIN_URL = "https://bangumi.tv"
-START_YEAR = 2023
+START_YEAR = 2000
 END_YEAR = 2024
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
