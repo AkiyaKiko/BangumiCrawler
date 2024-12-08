@@ -2,9 +2,13 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 import re
+import logging
 from config import MAIN_URL, HEADERS
 from utils.proxy_manager import get_random_proxy
 from aiohttp import ClientTimeout, ClientError
+
+# 设置日志
+logger = logging.getLogger(__name__)
 
 async def fetch(session, url):
     """异步获取网页内容，带超时设置和重试机制"""
