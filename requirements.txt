@@ -14,3 +14,4 @@ requests==2.32.3
 soupsieve==2.6
 urllib3==2.2.3
 yarl==1.18.3
+wordcloud==1.10.3
