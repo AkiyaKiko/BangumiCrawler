@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 async def fetch(session, url):
     """异步获取网页内容，带超时设置和重试机制"""
-    timeout = ClientTimeout(total=600)  # 设置60秒超时时间
+    timeout = ClientTimeout(total=600)  # 设置600秒超时时间
     retries = 20  # 最大重试次数
     attempt = 0
     proxy = get_random_proxy()  # 使用代理池中的代理
@@ -51,11 +51,11 @@ def extract_release_date(text):
     # 如果没有匹配到任何日期格式，返回 None
     return None
 
-async def get_total_pages(session, year):
+async def get_total_pages(session, year, region):
     """获取指定年份的番剧总页数"""
     page_num = 1
     while True:
-        url = f"{MAIN_URL}/anime/browser/日本/airtime/{year}?sort=rank&page={page_num}"
+        url = f"{MAIN_URL}/anime/browser/{region}/airtime/{year}?sort=rank&page={page_num}"
         html = await fetch(session, url)
         soup = BeautifulSoup(html, 'lxml')
         browser_item_list = soup.find(id="browserItemList")
@@ -63,11 +63,11 @@ async def get_total_pages(session, year):
             return page_num - 1  # 总页数
         page_num += 1
 
-async def get_anime_list(session, year, total_pages):
+async def get_anime_list(session, year, total_pages, region):
     """获取指定年份和页数的所有番剧信息"""
     tasks = []
     for page_num in range(1, total_pages + 1):
-        url = f"{MAIN_URL}/anime/browser/日本/airtime/{year}?sort=rank&page={page_num}"
+        url = f"{MAIN_URL}/anime/browser/{region}/airtime/{year}?sort=rank&page={page_num}"
         tasks.append(fetch(session, url))
 
     pages_content = await asyncio.gather(*tasks)
@@ -80,7 +80,7 @@ async def get_anime_list(session, year, total_pages):
         for item in browser_item_list.find_all('li', class_='item'):
             title_tag = item.find('h3').find('a') if item.find('h3') else None
             anime_name = title_tag.text.strip() if title_tag else None
-            sub_url = title_tag['href'] if title_tag else "#"
+            sub_url = title_tag['href'] if title_tag else None
             
             # 获取上映时间
             info_tag = item.find('p', class_='info tip')

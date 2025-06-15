@@ -50,7 +50,7 @@ async def fetch_user_comments(session, sub_url, page_limit=10):
 
         # 查找所有包含评论的item
         items = soup.find_all('div', class_='item clearit')
-        if not items:  # 如果没有找到更多评论项，说明到最后一页了
+        if not items: 
             logger.info(f"No more comments found on page {page}. Stopping.")
             break
 
@@ -59,7 +59,7 @@ async def fetch_user_comments(session, sub_url, page_limit=10):
                 # 提取评论内容
                 comment = item.find('p', class_='comment').get_text(strip=True)
 
-                # 提取看过时间
+                # 提取是否看过
                 time_ago = item.find('small', class_='grey').get_text(strip=True)
 
                 # 将数据添加到列表中

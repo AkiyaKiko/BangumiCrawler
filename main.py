@@ -5,7 +5,7 @@ from scraper.directory import get_anime_list, get_total_pages
 from scraper.fetcher import get_anime_details  # 获取番剧详细信息
 from scraper.comments import fetch_user_comments  # 获取番剧评论
 from utils.sqldb import create_db, insert_anime_data, insert_category_data, insert_anime_category_relation, insert_production_data, insert_anime_production_relation, insert_comment_data
-from config import USE_PROXY, START_YEAR, END_YEAR
+from config import START_YEAR, END_YEAR, REGION
 
 # 日志配置
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -50,16 +50,16 @@ async def fetch_anime_details_and_insert(session, anime_name, sub_url, release_d
 
 async def fetch_all_data():
     """抓取所有番剧的数据并插入到数据库"""
-    create_db()  # 创建数据库（如果不存在）
+    create_db()  # 创建数据库
 
     async with aiohttp.ClientSession() as session:
         for year in range(START_YEAR, END_YEAR + 1):
-            total_pages = await get_total_pages(session, year)
-            anime_list = await get_anime_list(session, year, total_pages)
+            total_pages = await get_total_pages(session, year, region = REGION)
+            anime_list = await get_anime_list(session, year, total_pages, region = REGION)
 
             tasks = []  # 用于存储所有异步任务
 
-            for anime_name, sub_url, release_date, score in anime_list:  # 获取的列表包含 release_date
+            for anime_name, sub_url, release_date, score in anime_list:  
                 # 创建并添加任务到任务列表
                 tasks.append(fetch_anime_details_and_insert(session, anime_name, sub_url, release_date, score))
 

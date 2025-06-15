@@ -41,11 +41,6 @@ async def get_anime_details(session, sub_url):
     html = await fetch(session, url)
     soup = BeautifulSoup(html, 'lxml')
 
-    '''decrypted because of the website's login requirement'''
-    # 获取评分
-    # score_tag = soup.find('span', class_='number', property='v:average')
-    # score = score_tag.text.strip() if score_tag else None
-    
     # 获取评分人数
     votes_tag = soup.find('span', property='v:votes')
     votes = votes_tag.text.strip() if votes_tag else None
@@ -74,8 +69,7 @@ async def get_anime_details(session, sub_url):
                     production_companies.append(production_name)
 
     return {
-        #'score': score,
-        'votes': votes,
+        'votes': votes, # 返回评分人数
         'tags': tags,  # 返回标签列表
         'production_companies': production_companies  # 返回制作公司列表
     }
