@@ -116,3 +116,6 @@ EDA/EDA.ipynb
 ## 📬 联系与贡献
 
 欢迎提交 [Issues](https://github.com/你的用户名/BangumiCrawler/issues) 或 [Pull Requests](https://github.com/你的用户名/BangumiCrawler/pulls)。
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
